@@ -10,14 +10,19 @@ import {
     ThemeIcon,
   } from '@mantine/core';
 import { Link } from 'react-router-dom';
+import { Carousel } from '@mantine/carousel';
 
   
   const useStyles = createStyles((theme) => ({
     inner: {
       display: 'flex',
+      flexWrap: 'wrap',
       justifyContent: 'space-between',
-      paddingTop: theme.spacing.xl * 2.5,
-      paddingBottom: theme.spacing.xl * 2.5,
+      paddingTop: theme.spacing.xl * 1.8,
+      paddingBottom: theme.spacing.xl * .5,
+      [theme.fn.smallerThan('md')]: {
+       flexDirection: 'column'
+      },
     },
   
     content: {
@@ -51,9 +56,22 @@ import { Link } from 'react-router-dom';
     image: {
       flex: 1,
   
-      [theme.fn.smallerThan('md')]: {
-        display: 'none',
-      },
+       [theme.fn.smallerThan('md')]: {
+        width: 360,
+        alignSelf: 'center',
+        marginTop: 24
+       },
+       [theme.fn.smallerThan('xs')]: {
+        width: "100%",
+        alignSelf: 'center',
+        marginTop: 24
+       },
+    },
+    carousel:{
+      [theme.fn.smallerThan('xs')]: {
+        width: "90%",
+        marginTop: 24,
+       },
     },
   
     highlight: {
@@ -107,7 +125,16 @@ import { Link } from 'react-router-dom';
                 </Link>
               </Group>
             </div>
+            <Carousel sx={{ maxWidth: 360, maxHeight:300 }} slideSize="100%" slideGap="sm" mx="auto" withIndicators height={300} loop className={classes.carousel}>
+            <Carousel.Slide>
             <Image src='http://www.mselektronik-beograd.com/pic_onama1.jpg' radius={'lg'} className={classes.image} />
+            </Carousel.Slide>
+            <Carousel.Slide>
+            <Image src='http://www.mselektronik-beograd.com/pic_proizvod1.jpg' radius={'lg'} className={classes.image} />
+            </Carousel.Slide>
+            <Carousel.Slide><Image src='http://www.mselektronik-beograd.com/pic_proizvod3.jpg' radius={'lg'} className={classes.image} /></Carousel.Slide>
+            </Carousel>
+           
           </div>
         </Container>
       </div>

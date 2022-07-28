@@ -76,6 +76,7 @@ export function ContactIconsList({ data = MOCKDATA, variant }) {
 export function ContactIcons() {
   return (
       <Box
+        m={7}
         sx={(theme) => ({
           padding: theme.spacing.xl,
           borderRadius: theme.radius.md,

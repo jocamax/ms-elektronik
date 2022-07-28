@@ -1,9 +1,25 @@
 import React from 'react'
 import { Text, Button } from '@mantine/core'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
 const Proizvodi = () => {
   return (
+    <motion.div initial='hidden' animate='visible'
+      variants={{
+        hidden: {
+          scale: .95,
+          opacity: 0
+        },
+        visible: {
+          scale:1,
+          opacity:1,
+          transition: {
+            delay: .2
+          }
+        }
+      }}
+      >
     <div className='wrap'>
     <div className='proizvodi-container'>
         <div className='proizvodi-img'>
@@ -51,6 +67,7 @@ const Proizvodi = () => {
         </div>
     </div>
     </div>
+    </motion.div>
   )
 }
 

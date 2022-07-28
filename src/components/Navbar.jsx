@@ -1,12 +1,37 @@
-import { createStyles, Header, Menu, Group, Center, Burger, Container, Text } from '@mantine/core';
+import { useState } from 'react';
+import { createStyles, Header, Container, Group, Burger, Paper, Transition, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { Link } from 'react-router-dom';
+
+const HEADER_HEIGHT = 60;
 
 const useStyles = createStyles((theme) => ({
-  inner: {
-    height: 56,
+  root: {
+    position: 'relative',
+    zIndex: 1,
+  },
+
+  dropdown: {
+    position: 'absolute',
+    top: HEADER_HEIGHT,
+    left: 0,
+    right: 0,
+    zIndex: 0,
+    borderTopRightRadius: 0,
+    borderTopLeftRadius: 0,
+    borderTopWidth: 0,
+    overflow: 'hidden',
+
+    [theme.fn.largerThan('sm')]: {
+      display: 'none',
+    },
+  },
+
+  header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    height: '100%',
   },
 
   links: {
@@ -34,72 +59,67 @@ const useStyles = createStyles((theme) => ({
     '&:hover': {
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     },
+
+    [theme.fn.smallerThan('sm')]: {
+      borderRadius: 0,
+      padding: theme.spacing.md,
+    },
   },
 
-  linkLabel: {
-    marginRight: 5,
+  linkActive: {
+    '&, &:hover': {
+      backgroundColor: '#5c5c41',
+      color: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).color,
+    },
   },
 }));
 
 
-export function HeaderMenu() {
-    const links = [{
-        link: '/',
-        label: 'Pocetna'
-      },
-      {
-        link: '/',
-        label: 'Proizvodi'
-      },]
-  const [opened, { toggle }] = useDisclosure(false);
-  const { classes } = useStyles();
+export function HeaderResponsive({ }) {
+  const links = [{
+    link: '/',
+    label: 'Pocetna'
+  },
+  {
+    link: '/proizvodi',
+    label: 'Proizvodi'
+  }
+]
+  const [opened, { toggle, close }] = useDisclosure(false);
+  const [active, setActive] = useState(links[0].link);
+  const { classes, cx } = useStyles();
 
-  const items = links.map((link) => {
-    const menuItems = link.links?.map((item) => (
-      <Menu.Item key={item.link}>{item.label}</Menu.Item>
-    ));
-
-    if (menuItems) {
-      return (
-        <Menu key={link.label} trigger="hover" exitTransitionDuration={0}>
-          <Menu.Target>
-            <a
-              href={link.link}
-              className={classes.link}
-              onClick={(event) => event.preventDefault()}
-            >
-              <Center>
-                <span className={classes.linkLabel}>{link.label}</span>
-              </Center>
-            </a>
-          </Menu.Target>
-          <Menu.Dropdown>{menuItems}</Menu.Dropdown>
-        </Menu>
-      );
-    }
-
-    return (
-      <a
-        key={link.label}
-        href={link.link}
-        className={classes.link}
-        onClick={(event) => event.preventDefault()}
-      >
-        {link.label}
-      </a>
-    );
-  });
+  const items = links.map((link) => (
+    <Link to={link.link}
+      key={link.label}
+      className={cx(classes.link, { [classes.linkActive]: active === link.link })}
+      onClick={(event) => {
+        // event.preventDefault();
+        setActive(link.link);
+        close();
+      }}
+    >
+      {link.label}
+    </Link>
+  ));
 
   return (
-    <Header height={56} mb={12}>
-      <Container>
-        <div className={classes.inner}>
-          <Text size={'xl'}>MS Elekronik</Text>
-          <Group spacing={5} className={classes.links}>
-            {items}
-          </Group>
-          <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
-        </div>
+    <Header height={HEADER_HEIGHT} mb={20} className={classes.root}>
+      <Container className={classes.header}>
+        <Text size={32}>MS Elektronik</Text>
+        <Group spacing={5} className={classes.links}>
+          {items}
+        </Group>
+
+        <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
+
+        <Transition transition="pop-top-right" duration={200} mounted={opened}>
+          {(styles) => (
+            <Paper className={classes.dropdown} withBorder style={styles}>
+              {items}
+            </Paper>
+          )}
+        </Transition>
       </Container>
     </Header>
   );
